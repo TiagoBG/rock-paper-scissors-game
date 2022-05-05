@@ -1,42 +1,47 @@
+
 .game-card {
+  border: 2px solid fuchsia;
   perspective: 150rem;
   position: relative;
-  height: 40rem;
-  max-width: 400px;
+  height: 20rem;
+  max-width: 30%;
   margin: 2rem;
   box-shadow: none;
   background: none;
   text-align: center;
 }
 
-.game-card-side {
-  height: 35rem;
+.front-little,
+.back-little {
+  height: 18rem;
   border-radius: 15px;
+  width: 14rem;
   transition: all 0.8s ease;
   backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 3;
-  width: 80%;
-  padding:2rem;
+  padding: 0.5rem;
   color: white;
 }
 
-.game-card-side.back {
-  transform: rotateY(-180deg);
-  background-color: #4158D0;
-  background-image: linear-gradient(43deg, #4158D0 0%,#C850C0 46%, #FFCC70 100%);
-}
-
-.game-card-side.front {
+.front-little {
+  border: 2px solid blue;
   background-color: #0093E9;
   background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
 }
 
-.game-card:hover .game-card-side.front {
+.back-little {
+  border: 2px solid orange;
+  position: absolute;
+  top: 0;
+  left: 3;
+  transform: rotateY(-180deg);
+  background-color: #4158D0;
+  background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+}
+
+.game-card:hover .front-little {
   transform: rotateY(180deg);
 }
 
-.game-card:hover .game-card-side.back {
+.game-card:hover .back-little {
   transform: rotateY(0deg);
 }

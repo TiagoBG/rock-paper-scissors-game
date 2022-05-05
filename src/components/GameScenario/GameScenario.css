@@ -1,5 +1,7 @@
-.game-section{
+.stage {
+    margin-top: 1rem;
     display: flex;
     flex-flow: row;
-    
+    justify-content: space-around;
+    border: 2px solid chocolate;
 }
