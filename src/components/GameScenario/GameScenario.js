@@ -8,6 +8,7 @@ import scissors from '../../assets/images/scissors.png';
 export default function GameScenario() {
   let [option, setOption] = useState('');
   let [opponentOption, setOpponentOption] = useState('');
+  //let [playerScore, setPlayerScore] = useState(0);
   let imgSrc, opImgSrc = '';
 
   if(option === 'rock'){
@@ -25,6 +26,13 @@ export default function GameScenario() {
   }else if(opponentOption === 'scissors' ){
     opImgSrc = scissors
   }
+
+  /* if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
+    setPlayerScore(playerScore++);
+  }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
+    setPlayerScore(playerScore--);
+  } */
+    
 
   let frontCards = document.getElementsByClassName('front-little');
   let backCards = document.getElementsByClassName('back-little');
@@ -46,10 +54,11 @@ export default function GameScenario() {
 
     setOpponentOption(choices[index])
   }
+
   
   return (
     <section className='game-section'>
-        <div className="score" style={{right: '0'}}><h2>Score: 0</h2></div>
+        <div className="score" style={{right: '0'}}><h2>Score: {0}</h2></div>
       <div className="stage">
       <div className="game-card">
       <div className="front-little">
