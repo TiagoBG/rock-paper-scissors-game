@@ -5,3 +5,36 @@
     justify-content: space-around;
     border: 2px solid chocolate;
 }
+
+.action-buttons{
+    border: 2px solid aqua;
+    width: 850px; 
+    height: 150px; 
+    margin: auto; 
+    display: flex; 
+    flex-flow:row;
+    justify-content: space-around;
+}
+
+.option{
+    margin: 3rem; 
+    padding: 0 3rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.rock{
+    border: 2px solid red; 
+    background: #FF9595;
+}
+
+.paper{
+    border: 2px solid yellow; 
+    background: #FBFF75;
+}
+
+.scissors{
+    border: 2px solid blue; 
+    background: #759AFF;
+}

@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import GameCard from '../GameCard/GameCard'
+import OptionButtons from '../OptionButtons/OptionButtons'
 import './GameScenario.css'
 
 export default function GameScenario() {
+  let [option, setOption] = useState('');
+  
   return (
     <section className='game-section'>
         <div className="score" style={{right: '0'}}><h2>Score: 0</h2></div>
       <div className="stage">
-        <GameCard title='Player'/>
-        <GameCard title='Opponent'/>       
+        <GameCard className='option-card' title='Player' option = {option}/>
+        <GameCard className='option-card' title='Opponent' option = {option}/>       
       </div>
-      <div className="action-buttons" style={{ border: '2px solid aqua', width:'850px', height:'150px', margin: 'auto', display:'flex', flexFlow:'row', justifyContent: 'space-around' }}>
-        <button className="option" style={{margin: '3rem', padding:'0 3rem', fontWeight:'bold', border: '2px solid red', background: '#FF9595', borderRadius: '25px'}}>Rock</button>
-        <button className="option" style={{margin: '3rem', padding:'0 3rem', fontWeight:'bold', border: '2px solid yellow', background: '#FBFF75', borderRadius: '25px'}}>Paper</button>
-        <button className="option" style={{margin: '3rem', padding:'0 3rem', fontWeight:'bold', border: '2px solid blue', background: '#759AFF', borderRadius: '25px'}}>Scissors</button>
-      </div>        
+      <div className="action-buttons">
+        <button className="option rock" onClick={()=>{setOption('rock'); document.getElementsByClassName('option-card').classList.add('move')}}>Rock</button>
+        <button className="option paper" onClick={()=>setOption('paper')}>Paper</button>
+        <button className="option scissors" onClick={()=>setOption('scissors')}>Scissors</button>
+    </div>        
     </section>
   )
 }
