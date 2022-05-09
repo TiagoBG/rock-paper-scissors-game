@@ -8,8 +8,19 @@ export default function GameScenario() {
   let [option, setOption] = useState('');
   let [opponentOption, setOpponentOption] = useState('');
   let [playerScore, setPlayerScore] = useState(0);
+  let [playerLives, setPlayerLives] = useState(['1', '2', '3']);
+
+  let frontCards = document.getElementsByClassName('front-little');
+  let backCards = document.getElementsByClassName('back-little');
+
   let imgSrc, opImgSrc = '';
-  let playerLives = ['1', '2', '3'];
+
+  const setOpponentsCard = () =>{
+    let choices = ['rock', 'paper', 'scissors'];
+    let index = Math.floor(Math.random()*3);
+
+    setOpponentOption(choices[index]);
+  }
 
   if(option === 'rock'){
     imgSrc = rock
@@ -27,20 +38,27 @@ export default function GameScenario() {
     opImgSrc = scissors
   }
 
-  if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
-    setPlayerScore(playerScore++);
-  }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
-    setPlayerScore(playerScore--);
-  }
-    
 
-  let frontCards = document.getElementsByClassName('front-little');
-  let backCards = document.getElementsByClassName('back-little');
+  const checkConditions = () => {  
+    console.log('CHEKEALOOO', option, opponentOption, playerScore)  
+    if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
+      setPlayerScore(playerScore++);
+    }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
+      
+      let newLives = playerLives.pop()
+
+      setPlayerLives(newLives);
+      console.log(playerLives)
+    }
+  }    
 
   const moveCards = () => {
     setOpponentsCard();
+
     Array.from(frontCards).map(x=>x.classList.add('move-front'));
     Array.from(backCards).map(x=>x.classList.add('move-back'));
+
+    checkConditions();
 
     setTimeout(() => {
       Array.from(frontCards).map(x=>x.classList.remove('move-front'));
@@ -48,12 +66,7 @@ export default function GameScenario() {
     }, 1500);
   }
 
-  const setOpponentsCard = () =>{
-    let choices = ['rock', 'paper', 'scissors'];
-    let index = Math.floor(Math.random()*3);
-
-    setOpponentOption(choices[index])
-  }
+  
 
   
   return (
