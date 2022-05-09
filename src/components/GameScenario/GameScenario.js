@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import OptionButtons from '../OptionButtons/OptionButtons'
 import './GameScenario.css'
 import rock from '../../assets/images/rock.png';
 import paper from '../../assets/images/paper.png';
@@ -8,8 +7,9 @@ import scissors from '../../assets/images/scissors.png';
 export default function GameScenario() {
   let [option, setOption] = useState('');
   let [opponentOption, setOpponentOption] = useState('');
-  //let [playerScore, setPlayerScore] = useState(0);
+  let [playerScore, setPlayerScore] = useState(0);
   let imgSrc, opImgSrc = '';
+  let playerLives = ['1', '2', '3'];
 
   if(option === 'rock'){
     imgSrc = rock
@@ -27,11 +27,11 @@ export default function GameScenario() {
     opImgSrc = scissors
   }
 
-  /* if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
+  if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
     setPlayerScore(playerScore++);
   }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
     setPlayerScore(playerScore--);
-  } */
+  }
     
 
   let frontCards = document.getElementsByClassName('front-little');
@@ -58,7 +58,7 @@ export default function GameScenario() {
   
   return (
     <section className='game-section'>
-        <div className="score" style={{right: '0'}}><h2>Score: {0}</h2></div>
+        <div className="score" style={{right: '0', display:'flex', flexFlow:'row'}}><h2>Score: {0}</h2><span style={{display:'flex', flexFlow: 'row'}}><h2 style={{marginLeft: '15rem'}}>Lives:</h2>{playerLives.map(el => <h2 style={{margin: '1.2rem 0.2rem'}} key={el}>&#128151;</h2>)}</span></div>
       <div className="stage">
       <div className="game-card">
       <div className="front-little">
