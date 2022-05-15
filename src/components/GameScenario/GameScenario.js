@@ -4,6 +4,10 @@ import rock from '../../assets/images/rock.png';
 import paper from '../../assets/images/paper.png';
 import scissors from '../../assets/images/scissors.png';
 
+import correctAudio from '../../assets/audio/correct.mp3';
+import wrongAudio from '../../assets/audio/wrong.wav';
+
+
 export default function GameScenario() {
   let [option, setOption] = useState('');
   let [opponentOption, setOpponentOption] = useState('');
@@ -14,6 +18,9 @@ export default function GameScenario() {
   let backCards = document.getElementsByClassName('back-little');
 
   let imgSrc, opImgSrc = '';
+
+  let correct = new Audio(correctAudio);
+  let wrong = new Audio(wrongAudio);
 
   const setOpponentsCard = () =>{
     let choices = ['rock', 'paper', 'scissors'];
@@ -38,17 +45,18 @@ export default function GameScenario() {
     opImgSrc = scissors
   }
 
-
   const checkConditions = () => {  
     console.log('CHEKEALOOO', option, opponentOption, playerScore)  
     if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
       setPlayerScore(playerScore++);
+      correct.play();
     }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
-      
+      wrong.play();
       let newLives = playerLives.pop()
 
       setPlayerLives(newLives);
-      console.log(playerLives)
+      console.log(playerLives);
+      
     }
   }    
 
