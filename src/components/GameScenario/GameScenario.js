@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import './GameScenario.css'
+import './GameScenario.css';
 import rock from '../../assets/images/rock.png';
 import paper from '../../assets/images/paper.png';
 import scissors from '../../assets/images/scissors.png';
@@ -18,6 +18,7 @@ export default function GameScenario() {
   });
   let [streak, setStreak] = useState(0);
 
+  // ! USE REF REVISAR!
   let frontCards = document.getElementsByClassName('front-little');
   let backCards = document.getElementsByClassName('back-little');
 
@@ -25,6 +26,10 @@ export default function GameScenario() {
 
   let correct = new Audio(correctAudio);
   let wrong = new Audio(wrongAudio);
+
+  useEffect(()=>{
+    console.log(streak);
+  }, [streak, round.playerLives]);
 
   const checkRound = (option) =>{
     let opponentOption = setOpponentsCard();    
@@ -54,7 +59,8 @@ export default function GameScenario() {
     opImgSrc = scissors
   }
 
-  const checkConditions = (option, opponentOption) => {  
+  const checkConditions = (option, opponentOption) => { 
+    debugger 
     if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
       correct.play();
       setStreak(++streak);
@@ -64,8 +70,7 @@ export default function GameScenario() {
 
     }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
       wrong.play();
-      setStreak(0); //TODO: FIX THIS BUG
-      console.log(streak);
+      setStreak(0); //TODO: FIX THIS BUG ? use state ==> USE REDUCER
       round.playerLives.pop();
       let newStats = [round.playerScore, round.playerLives];
       return newStats;      
