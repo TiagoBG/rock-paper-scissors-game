@@ -8,6 +8,9 @@ import scissors from '../../assets/images/scissors.png';
 import correctAudio from '../../assets/audio/correct.mp3';
 import wrongAudio from '../../assets/audio/wrong.wav';
 
+const success = new Audio(correctAudio);
+const wrong = new Audio(wrongAudio);
+
 export default function GameScenario() {
 
   const [round, setRound] = useState({
@@ -125,11 +128,11 @@ export default function GameScenario() {
     if (winner) {
       streak.current++;
       round.playerScore++;
-      new Audio(correctAudio).play();
+      success.play();
     } else if (round.playerLives.length && currentOponentOption !== currentPlayerOption) {
       round.playerLives.pop();
       streak.current = 0;
-      new Audio(wrongAudio).play();
+      wrong.play();
     }
   }
 
