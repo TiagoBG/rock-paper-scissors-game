@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import './GameScenario.css';
 import rock from '../../assets/images/rock.png';
@@ -8,136 +8,173 @@ import scissors from '../../assets/images/scissors.png';
 import correctAudio from '../../assets/audio/correct.mp3';
 import wrongAudio from '../../assets/audio/wrong.wav';
 
+const success = new Audio(correctAudio);
+const wrong = new Audio(wrongAudio);
 
 export default function GameScenario() {
-  let [round, setRound] = useState({
-    option : '',
+
+  const [round, setRound] = useState({
+    option: '',
     opponentOption: '',
-    playerScore : 0,
+    playerScore: 0,
     playerLives: ['1', '2', '3']
   });
-  let [streak, setStreak] = useState(0);
 
-  // ! USE REF REVISAR!
-  let frontCards = document.getElementsByClassName('front-little');
-  let backCards = document.getElementsByClassName('back-little');
+  const streak = useRef(0);
+  const imgSrc = useRef();
+  const opImgSrc = useRef();
+  const playerOption = useRef();
+  const oponentOption = useRef();
+  const images = { rock, paper, scissors };
 
-  let imgSrc, opImgSrc = '';
+  const frontCards = [];
+  const backCards = [];
+  const buttonsOptions = [];
 
-  let correct = new Audio(correctAudio);
-  let wrong = new Audio(wrongAudio);
-
-  useEffect(()=>{
-    console.log(streak);
-  }, [streak, round.playerLives]);
-
-  const checkRound = (option) =>{
-    let opponentOption = setOpponentsCard();    
-    const [playerScore, playerLives] = checkConditions(option, opponentOption);     
-    moveCards(option, opponentOption, playerScore, playerLives);
+  function addFrontCard(card) {
+    if (card)
+      frontCards.push(card);
   }
 
-  const setOpponentsCard = () =>{
-    let choices = ['rock', 'paper', 'scissors'];
-    //let index = Math.floor(Math.random()*3);
-    return choices[0];
+  function addBackCard(card) {
+    if (card)
+      backCards.push(card);
   }
 
-  if(round.option === 'rock'){
-    imgSrc = rock
-  }else if (round.option === 'paper'){
-    imgSrc = paper
-  }else if(round.option === 'scissors' ){
-    imgSrc = scissors
+  function addButtonOption(button) {
+    if (button)
+      buttonsOptions.push(button);
   }
 
-  if(round.opponentOption === 'rock'){
-    opImgSrc = rock
-  }else if (round.opponentOption === 'paper'){
-    opImgSrc = paper
-  }else if(round.opponentOption === 'scissors' ){
-    opImgSrc = scissors
+  function disableOptions() {
+    buttonsOptions.forEach(button => {
+      button.disabled = true;
+    })
   }
 
-  const checkConditions = (option, opponentOption) => { 
-    debugger 
-    if((option === 'rock' && opponentOption === 'scissors') || (option === 'paper' && opponentOption === 'rock') || (option === 'scissors' && opponentOption === 'paper')){
-      correct.play();
-      setStreak(++streak);
-      console.log(streak, typeof(streak))
-      let newStats = [round.playerScore+=1, round.playerLives];
-      return newStats;
+  function activeOptions() {
+    buttonsOptions.forEach(button => {
+      button.disabled = false;
+    })
+  }
 
-    }else if ((option === 'rock' && opponentOption === 'paper') || (option === 'paper' && opponentOption === 'scissors') || (option === 'scissors' && opponentOption === 'rock')){
-      wrong.play();
-      setStreak(0); //TODO: FIX THIS BUG ? use state ==> USE REDUCER
-      round.playerLives.pop();
-      let newStats = [round.playerScore, round.playerLives];
-      return newStats;      
-    }else{
-      return [round.playerScore, round.playerLives];
+  function moveOrMoveAgain(moveAgain = false) {
+    if (moveAgain) {
+      frontCards
+        .forEach(frontCard => frontCard.classList.remove('move-front'));
+
+      backCards
+        .forEach(backCard => backCard.classList.remove('move-back'));
+
+    } else {
+      frontCards
+        .forEach(frontCard => frontCard.classList.add('move-front'));
+
+      backCards
+        .forEach(backCard => backCard.classList.add('move-back'));
     }
-  }    
+  }
 
-  const moveCards = (option, opponentOption, playerScore, playerLives) => {  
-    Array.from(frontCards).map(x=>x.classList.add('move-front'));
-    Array.from(backCards).map(x=>x.classList.add('move-back'));    
+  function moveCards() {
 
-    if(streak!==0 && streak % 3 === 0){
-      round.playerLives.push((round.playerLives.length+1).toString());
-      setRound({option, opponentOption, playerScore, playerLives});      
-      console.log(playerLives)      
-    }else{
-      setRound({option, opponentOption, playerScore, playerLives});
-    }
+    disableOptions();
+    moveOrMoveAgain();
 
-    let optionButtons = document.getElementsByClassName('option');
-    Array.from(optionButtons).map(x=> x.setAttribute('disabled', ''));
     setTimeout(() => {
-      Array.from(frontCards).map(x=>x.classList.remove('move-front'));
-      Array.from(backCards).map(x=>x.classList.remove('move-back'));      
-      if(round.playerLives.length === 0){
+
+      const auxRound = { ...round };
+
+      if (streak.current !== 0 && streak.current % 3 === 0) {
+        auxRound.playerLives.push((auxRound.playerLives.length + 1).toString());
+      }
+
+      setRound(auxRound);
+      moveOrMoveAgain(true);
+      if (auxRound.playerLives.length) {
+        activeOptions();
+      }
+      else {
         Swal.fire(
           'Game Over',
           `Your score is: ${round.playerScore}`,
           'warning'
         )
-      }else{
-        Array.from(optionButtons).map(x=> x.removeAttribute('disabled'));
       }
-    }, 1500);
+
+    }, 1200);
+
   }
-  
+
+  function setOponentoption() {
+    const choice = ['rock', 'paper', 'scissors'][0];
+    oponentOption.current = choice;
+  }
+
+  function setImages() {
+    imgSrc.current.src = images[playerOption.current];
+    opImgSrc.current.src = images[oponentOption.current];
+  }
+
+  function checkConditions() {
+
+    const currentPlayerOption = playerOption.current;
+    const currentOponentOption = oponentOption.current;
+
+    const winner =
+      (currentPlayerOption === 'rock' && currentOponentOption === 'scissors') ||
+      (currentPlayerOption === 'paper' && currentOponentOption === 'rock') ||
+      (currentPlayerOption === 'scissors' && currentOponentOption === 'paper');
+
+    if (winner) {
+      streak.current++;
+      round.playerScore++;
+      success.play();
+    } else if (round.playerLives.length && currentOponentOption !== currentPlayerOption) {
+      round.playerLives.pop();
+      streak.current = 0;
+      wrong.play();
+    }
+  }
+
+  function play(e) {
+    const [, option] = e.target.classList;
+    playerOption.current = option;
+    setOponentoption();
+    setImages();
+    moveCards();
+    checkConditions();
+  }
+
   return (
     <section className='game-section'>
-        <div className="score" style={{right: '0', display:'flex', flexFlow:'row'}}><h2>Score: {round.playerScore}</h2><span style={{display:'flex', flexFlow: 'row'}}><h2 style={{marginLeft: '25rem'}}>Lives:</h2>{round.playerLives.map(el => <h2 style={{margin: '1.2rem 0.2rem'}} key={el}>&#128151;</h2>)}</span></div>
+      <div className="score" style={{ right: '0', display: 'flex', flexFlow: 'row' }}><h2>Score: {round.playerScore}</h2><span style={{ display: 'flex', flexFlow: 'row' }}><h2 style={{ marginLeft: '25rem' }}>Lives:</h2>{round.playerLives.map(el => <h2 style={{ margin: '1.2rem 0.2rem' }} key={el}>&#128151;</h2>)}</span></div>
       <div className="stage">
-      <div className="game-card">
-      <div className="front-little">
-        <h1>Player's</h1>
-        <h1>Card</h1>
-      </div>
-      <div className="back-little">
-        <img id='option-image' src={imgSrc} width='200px' alt={round.option}/>
-        <h1 id='option-name'>{round.option}</h1>
-      </div>
-    </div>
-    <div className="game-card">
-      <div className="front-little">
-        <h1>Opponent's</h1>
-        <h1>Card</h1>
-      </div>
-      <div className="back-little">
-        <img id='option-image' src={opImgSrc} width='200px' alt={round.option}/>
-        <h1 id='option-name'>{round.opponentOption}</h1>
-      </div>
-    </div>     
+        <div className="game-card">
+          <div className="front-little" ref={addFrontCard}>
+            <h1>Player's</h1>
+            <h1>Card</h1>
+          </div>
+          <div className="back-little" ref={addBackCard}>
+            <img id='option-image' ref={imgSrc} width='200px' alt={round.option} />
+            <h1 id='option-name'>{round.option}</h1>
+          </div>
+        </div>
+        <div className="game-card">
+          <div className="front-little" ref={addFrontCard}>
+            <h1>Opponent's</h1>
+            <h1>Card</h1>
+          </div>
+          <div className="back-little" ref={addBackCard}>
+            <img id='option-image' ref={opImgSrc} width='200px' alt={round.option} />
+            <h1 id='option-name'>{round.opponentOption}</h1>
+          </div>
+        </div>
       </div>
       <div className="action-buttons">
-        <button className="option rock" onClick={()=>{checkRound('rock');}}>Rock</button>
-        <button className="option paper" onClick={()=>{checkRound('paper');}}>Paper</button>
-        <button className="option scissors" onClick={()=>{checkRound('scissors');}}>Scissors</button>
-    </div>        
+        <button className="option rock" ref={addButtonOption} onClick={play}>Rock</button>
+        <button className="option paper" ref={addButtonOption} onClick={play}>Paper</button>
+        <button className="option scissors" ref={addButtonOption} onClick={play}>Scissors</button>
+      </div>
     </section>
   )
 }
